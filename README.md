@@ -43,3 +43,7 @@ For alternative characters and nesting, `perc` also comes with `#%/$` and `#%/?`
 ## Why Not?
 
 Clojure(Script)'s anonymous function syntax sugar is actually built into the language's reader. Because `perc`'s anonymous functions expand to regular anonymous functions, the resulting code will likely be a little larger.
+
+Technically, the tokens within the anaphoric macros are not "valid" Clojure symbols.
+
+`perc` allows Clojure to use ClojureScript's more permissive anonymous function arity handling, however it does not assert Clojure's more strict arity checking.
