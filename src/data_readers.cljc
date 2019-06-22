@@ -1,0 +1,9 @@
+{%/%    perc.core/%
+ %/%%   perc.core/%%
+ %/%%%  perc.core/%%%
+ %/$    perc.core/$
+ %/$$   perc.core/$$
+ %/$$$  perc.core/$$$
+ %/?    perc.core/?
+ %/??   perc.core/??
+ %/???  perc.core/???}
