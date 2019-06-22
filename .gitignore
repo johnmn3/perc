@@ -1,0 +1,6 @@
+.cpcache/
+.DS_Store
+.main.js
+package-lock.json
+/out/
+/node_modules/
