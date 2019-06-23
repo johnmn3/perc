@@ -19,11 +19,12 @@
 (defn handle [sym el]
   (if (= el (symbol (str "perclocal" sym)))
     (throw (Exception. (str "No nesting for reader tag #%/" sym)))
-    (if (string/starts-with? (str el) (str sym))
+    (if (and (string/starts-with? (str el) sym)
+          (= sym (->> el str (take-while #{(first sym)}) (apply str))))
       (let [[param kns kn] (string/split (str el) #":")
-            index (->> param (drop (count (str sym))) (apply str))
+            index (->> param (drop (count sym)) (apply str))
             l (symbol (str "perclocal" sym))
-            v (get-val l (str index))]
+            v (get-val l index)]
         (if-not (or kns kn)
           `~v
           `(~(get-keyword kns kn) ~v)))

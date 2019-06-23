@@ -50,4 +50,8 @@
                    (#%/%(swap! %:state
                          #%/$(update-in $ [:fs @%:current-path] empty))))
                  @state)
-              {:fs {:home #{}}})))))
+              {:fs {:home #{}}}))))
+
+  (t/testing "don't answer to % in %%% or viceversa"
+    (t/is (= nil (#%/%%%(do %) 3)))
+    (t/is (= nil (#%/%(do %%%) 3)))))
