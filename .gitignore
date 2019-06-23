@@ -4,3 +4,4 @@
 package-lock.json
 /out/
 /node_modules/
+cljs-test-runner-out

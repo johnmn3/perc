@@ -21,7 +21,7 @@
     (throw (Exception. (str "No nesting for reader tag #%/" sym)))
     (if (string/starts-with? (str el) (str sym))
       (let [[param kns kn] (string/split (str el) #":")
-            [_ index] param
+            index (->> param (drop (count (str sym))) (apply str))
             l (symbol (str "perclocal" sym))
             v (get-val l (str index))]
         (if-not (or kns kn)
