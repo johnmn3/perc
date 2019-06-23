@@ -31,34 +31,28 @@
 
 
 (defn % [expr]
-  (let []
-    `(fn [& ~(symbol "perclocal%")]
-       ~(w/postwalk (partial handle "%") expr))))
+  `(fn [& ~(symbol "perclocal%")]
+     ~(w/postwalk (partial handle "%") expr)))
 
 (defn %% [expr]
-  (let []
-    `(fn [& ~(symbol "perclocal%%")]
-       ~(w/postwalk (partial handle "%%") expr))))
+  `(fn [& ~(symbol "perclocal%%")]
+     ~(w/postwalk (partial handle "%%") expr)))
 
 (defn %%% [expr]
-  (let []
-    `(fn [& ~(symbol "perclocal%%%")]
-       ~(w/postwalk (partial handle "%%%") expr))))
+  `(fn [& ~(symbol "perclocal%%%")]
+     ~(w/postwalk (partial handle "%%%") expr)))
 
 (defn $ [expr$]
-  (let []
-    `(fn [& ~(symbol "perclocal$")]
-       ~(w/postwalk (partial handle "$") expr$))))
+  `(fn [& ~(symbol "perclocal$")]
+     ~(w/postwalk (partial handle "$") expr$)))
 
 (defn $$ [expr$$]
-  (let []
-    `(fn [& ~(symbol "perclocal$$")]
-       ~(w/postwalk (partial handle "$$") expr$$))))
+  `(fn [& ~(symbol "perclocal$$")]
+     ~(w/postwalk (partial handle "$$") expr$$)))
 
 (defn $$$ [expr$$$]
-  (let []
-    `(fn [& ~(symbol "perclocal$$$")]
-       ~(w/postwalk (partial handle "$$$") expr$$$))))
+  `(fn [& ~(symbol "perclocal$$$")]
+     ~(w/postwalk (partial handle "$$$") expr$$$)))
 
 (defn ? [expr?]
   `(fn [& ~(symbol "perclocal?")]
