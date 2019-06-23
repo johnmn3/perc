@@ -96,10 +96,16 @@ We can also more easily slice and dice named values in deeply nested transformat
   (take 10)
   ;; ... many transformations later
   (mapv
-    (partial apply ;; say, we want to invert it
-      #%/%[[%3:z %3:y %3:x]
-           [%2:z %2:y %2:x]
-           [%1:z %1:y %1:x]])))
+    (partial apply ;; say, we want flip and update the vertices
+      #%/%[(assoc %3 :x (inc %3:x) :x (dec %3:x))
+           (assoc %2 :x (dec %2:x) :x (inc %2:x))
+           (assoc %1 :x (inc %1:x) :x (dec %1:x))]))
+  ;; ... and more ...
+  (mapv
+    (partial apply
+      #%/%(Triangle. %1:x %1:y %1:z,
+                     %2:x %2:y %2:z,
+                     %3:x %3:y %3:z))))
 ```
 
 #### Return literals
