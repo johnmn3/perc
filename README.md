@@ -110,7 +110,7 @@ We can also more easily slice and dice named values in deeply nested transformat
 
 #### Return literals
 
-As you may have just noticed in the example above, literal vectors and maps can be used in place of lists if we don't need to evaluate anything, like:
+As you may have just noticed in the example above, literal vectors and maps can be used for quick updates in place, like:
 
 ```clojure
 cljs.user=> (#%/%{::a (inc %1) ::b (inc %2)} 4 5)
@@ -124,11 +124,11 @@ cljs.user=> (#%/%[(inc %:x) (inc %:y)] {:x 4 :y 5})
 [5 6]
 ```
 
-Or
+Or just for wrapping stuff
 
 ```clojure
-cljs.user=> (#%/%[(inc %1) (inc %2)] 4 5)
-[5 6]
+cljs.user=> (#%/%{:a %1 :b %2} 4 5)
+{:a 4, :b 5}
 ```
 
 This makes for a short and quick way to restructure data as it flows through deeply nested transformations.
@@ -150,7 +150,7 @@ Suppose we had some data:
 ```clojure
 {:events [e1 e2 e3]
  :event-handler (fn [e] ...
- :time-out-callback {:default (fn [e] ...
+ :time-out-callback (fn [msg] ...
 ```
 
 Using old-school syntax, we might do something like this to apply the event handler to the events:
@@ -178,7 +178,7 @@ For alternative characters and nesting, `perc` also comes with `#%/$` and `#%/?`
 ```clojure
 #%/%(mapv
       #%/$(%:event-handler $:event-data
-            #%/?(%:time-out-callback ?:default))
+            #%/?(%:time-out-callback ?:time-out-msg))
       %:events)
 ```
 To do this the old-school way, we'd end up with something that looks like this:
@@ -189,7 +189,7 @@ To do this the old-school way, we'd end up with something that looks like this:
      (:event-data inner-val)
      (fn [inner-inner-val]
        ((:time-out-callback %)
-        (:default inner-inner-val)))))
+        (:time-out-msg inner-inner-val)))))
   (:events %))
 ```
 
