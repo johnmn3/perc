@@ -28,7 +28,7 @@ Place the following in the `:deps` map of your `deps.edn` file:
   ...
 ```
 
-If you want to testing things out _right now_, from the comfort of your own `~/home`, go ahead and drop this in your bash pipe and smoke it:
+If you want to test things out _right now_, from the comfort of your own `~/home`, go ahead and drop this in your bash pipe and smoke it:
 
 ```clojure
 clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "1c7e1d63aae9b2e59087ffc7774f6520b34e4c26"}}}' -m cljs.main -c perc.core -re node -r
@@ -50,7 +50,7 @@ Once a project is launched, you don't need to require anything because tagged li
 ## Usage
 
 #### Named anonymous parameters
-All you have to do is prepend your function body with `#%/%`, like you would normally use just `#` for anonymous functions. Then you can use `%` and `%1` like usual, but you can also do `%:foo` or `%1:bar`.
+All you have to do is prepend your function body with `#%/%` - like you would normally use just `#` for with anonymous functions. Then you can use `%` and `%1` like usual, but you can also do `%:foo` or `%1:bar`.
 
 #### Namespaced anonymous parameters
 
@@ -68,15 +68,28 @@ Pulling named values out of multiple different parameters works as you'd expect.
 #%/%(response %1:ctx %2:status %2:body)
 ```
 
-Here we grab `:ctx` from the first parameter, `:status` from the second, and `:body` from the second.
+Here we grab `:ctx` from the first parameter, `:status` from the second and `:body` from the second.
 
-This also makes it easier to deal with ambiguous keys coming in from multiple map sources. For example:
+This also makes it easier to deal with ambiguous keys coming in from multiple map sources. For example, suppose we want a function that takes three point maps and provides them to a `Triangle` constructor:
 
 ```clojure
 #%/%(Triangle. %1:x %1:y %1:z,
                %2:x %2:y %2:z,
                %3:x %3:y %3:z)
 ```
+
+Doing that with the regular old syntax, we would clobber coordinates if we tried to destructure using `:keys [x y z]`. And the alternative would be rather verbose and unnecessarily confusing:
+
+```clojure
+#(let [{x1 :x y1 :y z1 :z} %1
+       {x2 :x y2 :y z2 :z} %2
+       {x3 :x y3 :y z3 :z} %3]
+   (Triangle. x1 y1 z1,
+              x2 y2 z2,
+              x3 y3 z3))
+```
+
+It doesn't get much more concise than the `perc` syntax above - at least, if you're destructuring over multiple maps only one level deep.
 
 We can also more easily slice and dice named values in deeply nested transformations. Here's a more involved example:
 
@@ -97,9 +110,9 @@ We can also more easily slice and dice named values in deeply nested transformat
   ;; ... many transformations later
   (mapv
     (partial apply ;; say, we want flip and update the vertices
-      #%/%[(assoc %3 :x (inc %3:x) :x (dec %3:x))
-           (assoc %2 :x (dec %2:x) :x (inc %2:x))
-           (assoc %1 :x (inc %1:x) :x (dec %1:x))]))
+      #%/%[(assoc %3 :x (inc %3:x) :z (dec %3:z))
+           (assoc %2 :x (dec %2:x) :z (inc %2:z))
+           (assoc %1 :x (inc %1:x) :z (dec %1:z))]))
   ;; ... and more ...
   (mapv
     (partial apply
@@ -136,9 +149,11 @@ This makes for a short and quick way to restructure data as it flows through dee
 ## Nesting
 
 Like with `#()`, you can't nest `perc`s, like:
+
 ```clojure
 #%/%(do #%/%())
 ```
+
 Doing so will throw a syntax error.
 
 #### `%%` & `%%%`
@@ -157,9 +172,9 @@ Using old-school syntax, we might do something like this to apply the event hand
 
 ```clojure
 #(mapv
-   (fn [inner-val]
+   (fn [event]
      ((:event-handler %)
-      (:event-data inner-val)))
+      (:event-data event)))
    (:events %))
 ```
 
@@ -184,12 +199,12 @@ For alternative characters and nesting, `perc` also comes with `#%/$` and `#%/?`
 To do this the old-school way, we'd end up with something that looks like this:
 ```clojure
 #(mapv
-  (fn [inner-val]
+  (fn [event]
     ((:event-handler %)
-     (:event-data inner-val)
-     (fn [inner-inner-val]
+     (:event-data event)
+     (fn [time-out-event]
        ((:time-out-callback %)
-        (:time-out-msg inner-inner-val)))))
+        (:time-out-msg time-out-event)))))
   (:events %))
 ```
 
