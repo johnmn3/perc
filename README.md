@@ -5,7 +5,7 @@ Bittersweet anonymous functions, _with a `perc` ;)_
 
 ## What?
 
-Syntactically, `perc` is very similar to Clojure's anonymous function syntax `#(Point. %1 %2 %3)`
+Syntactically, `perc`s are very similar to Clojure's anonymous function syntax `#(Point. %1 %2 %3)`
 
 But with a _"perc"_...
 
@@ -148,7 +148,7 @@ This makes for a short and quick way to restructure data as it flows through dee
 
 ## Nesting
 
-Like with `#()`, you can't nest `perc`s, like:
+Like with traditional, sugared anonymous functions, you can't nest `perc`s of a given type, like:
 
 ```clojure
 #%/%(do #%/%())
@@ -158,7 +158,7 @@ Doing so will throw a syntax error.
 
 #### `%%` & `%%%`
 
-There's also `#%/%%` and `#%/%%%` for explicitly nesting second and third levels, respectively. They each transform `%%` and `%%%` symbols within their enclosing forms.
+However, there are also the tagged literals `#%/%%` and `#%/%%%` for explicitly nesting deeper levels. They each transform `%%` and `%%%` symbols, respectively, within their enclosing forms.
 
 Suppose we had some data:
 
@@ -186,9 +186,11 @@ Using the new-school syntax:
       %:events)
 ```
 
+Being able to reference multiple levels of depth with `%`, `%%` and `%%%` allows us to maintain syntactic concision without having to take the classical `(fn [])` escape hatch as often. But wait, there's more...
+
 #### `$` & `?`
 
-For alternative characters and nesting, `perc` also comes with `#%/$` and `#%/?`, each with their double and triple nesting variants as well.
+For alternatives to `#%/%`, there are also `perc`s for `#%/$` and `#%/?`, each with their double and triple nesting variants as well.
 
 ```clojure
 #%/%(mapv
@@ -211,12 +213,12 @@ To do this the old-school way, we'd end up with something that looks like this:
 
 ## How
 
-`perc` employs [tagged literals](https://clojure.org/reference/reader#tagged_literals). They essentially work like macros but take only one parameter (the token to the right them) and have no parenthesis around themselves and their parameter. At read time, the pair of reader tag and its parameter are replaced by the return value of the tag's transformation function. Because we only need to instrument a single form with our syntax sugar, tagged literals work out pretty good for this use-case.
+`perc`s employ [tagged literals](https://clojure.org/reference/reader#tagged_literals). They essentially work like macros but take only one parameter (the token to the right them) and have no parenthesis around themselves and their parameter. At read time, the pair of reader tag and its parameter are replaced by the return value of the tag's transformation function. Because we only need to instrument a single form with our syntax sugar, tagged literals work out pretty good for this use-case.
 
 ## Why Not?
 
-Clojure(Script)'s anonymous function syntax sugar is actually built into the language's reader. Because `perc`'s anonymous functions expand to regular anonymous functions, the resulting code will likely be a little larger.
+Clojure(Script)'s anonymous function syntax sugar is actually built into the language's reader. Because a `perc`'s anonymous function expand to a regular anonymous function, the resulting code will likely be a little larger.
 
 Technically, the tokens within the anaphoric macros are not "valid" Clojure symbols.
 
-`perc` allows Clojure to use ClojureScript's more permissive anonymous function arity handling, however it does not assert Clojure's more strict arity checking.
+`perc`s allow Clojure to use ClojureScript's more permissive anonymous function arity handling, however they do not assert Clojure's more strict arity checking.
