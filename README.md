@@ -24,14 +24,14 @@ Place the following in the `:deps` map of your `deps.edn` file:
 ```clojure
   ...
   johnmn3/perc {:git/url "https://github.com/johnmn3/perc"
-                :sha "1c7e1d63aae9b2e59087ffc7774f6520b34e4c26"}
+                :sha "676a444fa7f0eb23cea02832edb5f52ce6bc97d4"}
   ...
 ```
 
 If you want to test things out _right now_, from the comfort of your own `~/home`, go ahead and drop this in your bash pipe and smoke it:
 
 ```clojure
-clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "1c7e1d63aae9b2e59087ffc7774f6520b34e4c26"}}}' -m cljs.main -c perc.alpha.core -re node -r
+clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "676a444fa7f0eb23cea02832edb5f52ce6bc97d4"}}}' -m cljs.main -c perc.alpha.core -re node -r
 ```
 
 Then you should be able to test things out right away:
