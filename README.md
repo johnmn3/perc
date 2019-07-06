@@ -31,7 +31,7 @@ Place the following in the `:deps` map of your `deps.edn` file:
 If you want to test things out _right now_, from the comfort of your own `~/home`, go ahead and drop this in your bash pipe and smoke it:
 
 ```clojure
-clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "1c7e1d63aae9b2e59087ffc7774f6520b34e4c26"}}}' -m cljs.main -c perc.core -re node -r
+clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "1c7e1d63aae9b2e59087ffc7774f6520b34e4c26"}}}' -m cljs.main -c perc.alpha.core -re node -r
 ```
 
 Then you should be able to test things out right away:
@@ -146,6 +146,32 @@ cljs.user=> (#%/%{:a %1 :b %2} 4 5)
 
 This makes for a short and quick way to restructure data as it flows through deeply nested transformations.
 
+#### Keyword arguments
+
+[Keyword arguments](https://clojure.org/guides/destructuring#_keyword_arguments) provide a convenient way to arguments to a function without having to worry about the order of those arguments. The official docs show this as an example:
+
+```clojure
+(defn configure [val & {:keys [debug verbose]
+                        :or {debug false, verbose false}}]
+  (println "val =" val " debug =" debug " verbose =" verbose))
+```
+
+Allowing us to do:
+
+```clojure
+(configure 12 :verbose true :debug true)
+```
+
+Using `perc`'s vararg syntax allows you can easily stick keyword arguments in places anonymously:
+
+```clojure
+{...
+ :configure #%/%(println "val =" %1
+                  " debug =" (or %&:debug false)
+                  " verbose =" (or %&:verbose false))
+ ...}
+```
+
 ## Nesting
 
 Like with traditional, sugared anonymous functions, you can't nest `perc`s of a given type, like:
@@ -163,27 +189,27 @@ However, there are also the tagged literals `#%/%%` and `#%/%%%` for explicitly 
 Suppose we had some data:
 
 ```clojure
-{:events [e1 e2 e3]
- :event-handler (fn [e] ...
- :time-out-callback (fn [msg] ...
+{::demo/events [e1 e2 e3]
+ :acme/event-handler (fn ...
+ ::time-out-callback (fn ...
+ ... }
 ```
 
 Using old-school syntax, we might do something like this to apply the event handler to the events:
 
 ```clojure
-#(mapv
-   (fn [event]
-     ((:event-handler %)
-      (:event-data event)))
-   (:events %))
+(fn [{events ::demo/events
+      event-handler :acme/event-handler]
+  (mapv %(event-handler (:event/data %))
+    events)
 ```
 
-Using the new-school syntax:
+Using the new-school syntax, we don't have to give as many things new names:
 
 ```clojure
 #%/%(mapv
-      #%/%%(%:event-handler %%:event-data)
-      %:events)
+      #%/%%(%:acme/event-handler %%:event/data)
+      %::demo/events)
 ```
 
 Being able to reference multiple levels of depth with `%`, `%%` and `%%%` allows us to maintain syntactic concision without having to take the classical `(fn [])` escape hatch as often. But wait, there's more...
@@ -194,26 +220,26 @@ For alternatives to `#%/%`, there are also `perc`s for `#%/$` and `#%/?`, each w
 
 ```clojure
 #%/%(mapv
-      #%/$(%:event-handler $:event-data
-            #%/?(%:time-out-callback ?:time-out-msg))
-      %:events)
+      #%/$(%:acme/event-handler $:event/id $:event/data
+            #%/?(%::time-out-callback ?:error/id ?:error/time-out-msg))
+      %::demo/events)
 ```
 To do this the old-school way, we'd end up with something that looks like this:
 ```clojure
-#(mapv
-  (fn [event]
-    ((:event-handler %)
-     (:event-data event)
-     (fn [time-out-event]
-       ((:time-out-callback %)
-        (:time-out-msg time-out-event)))))
-  (:events %))
+(fn [{events ::demo/events
+      time-out-callback ::time-out-callback
+      event-handler :acme/event-handler]
+  (mapv
+    (fn [{:keys [event/data event/id]}]
+      (event-handler id data
+       (fn [{error-id :error/id msg :error/time-out-msg}]
+         (time-out-callback error-id msg))))
+    events)
 ```
-
 
 ## How
 
-`perc`s employ [tagged literals](https://clojure.org/reference/reader#tagged_literals). They essentially work like macros but take only one parameter (the token to the right them) and have no parenthesis around themselves and their parameter. At read time, the pair of reader tag and its parameter are replaced by the return value of the tag's transformation function. Because we only need to instrument a single form with our syntax sugar, tagged literals work out pretty good for this use-case.
+`perc`s employ [tagged literals](https://clojure.org/reference/reader#tagged_literals). They essentially work like macros but take only one parameter (the token to the right of them) and have no parenthesis around themselves and their parameter. At read time, the pair of reader tag and its parameter are replaced by the return value of the tag's transformation function. Because we only need to instrument a single form with our syntax sugar, tagged literals work out pretty good for this use-case.
 
 ## Why Not?
 

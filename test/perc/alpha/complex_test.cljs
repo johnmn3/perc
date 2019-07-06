@@ -1,5 +1,7 @@
-(ns perc.complex-test
-  (:require [cljs.test :as t]))
+(ns perc.alpha.complex-test
+  (:require [cljs.test :as t]
+            [perc.alpha.core]))
+
 
 (t/deftest nesting%
   (t/testing "nesting %%% in a %% in a %"

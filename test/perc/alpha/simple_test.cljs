@@ -1,5 +1,6 @@
-(ns perc.simple-test
-  (:require [cljs.test :as t]))
+(ns perc.alpha.simple-test
+  (:require [cljs.test :as t]
+            [perc.alpha.core :as perc]))
 
 
 

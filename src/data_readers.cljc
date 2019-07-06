@@ -1,9 +1,9 @@
-{%/%    perc.core/%
- %/%%   perc.core/%%
- %/%%%  perc.core/%%%
- %/$    perc.core/$
- %/$$   perc.core/$$
- %/$$$  perc.core/$$$
- %/?    perc.core/?
- %/??   perc.core/??
- %/???  perc.core/???}
+{%/%    perc.alpha.core/%
+ %/%%   perc.alpha.core/%%
+ %/%%%  perc.alpha.core/%%%
+ %/$    perc.alpha.core/$
+ %/$$   perc.alpha.core/$$
+ %/$$$  perc.alpha.core/$$$
+ %/?    perc.alpha.core/?
+ %/??   perc.alpha.core/??
+ %/???  perc.alpha.core/???}
