@@ -200,7 +200,7 @@ Using old-school syntax, we might do something like this to apply the event hand
 ```clojure
 (fn [{events ::demo/events
       event-handler :acme/event-handler]
-  (mapv %(event-handler (:event/data %))
+  (mapv #(event-handler (:event/data %))
     events)
 ```
 
