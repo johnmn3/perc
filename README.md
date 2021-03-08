@@ -146,7 +146,7 @@ We now might ask, why did we decide to keep Clojure's 1-based indexing for anony
 
 Answer: `perc`s are a read-time code notation designed for humans, not programmatic runtime generation. Because they're tag literals, they disappear after read time. They're literally not meant to be interpreted at runtime like other runtime data (just like Clojure's existing anonymous fn syntax), so it's not as if you'll be adding indexes to `perc`s expressions programmatically anyway. If you disagree with this decision and preferred we moved to 0-based indexes feel free to file an issue here and we can debate the merits.
 
-|token|=>|Expression|
+|Path Expression|=>|Expression|
 |---:|---:|:---|
 |`%`| => | `(get-in % [0])`|
 |`%:x`| => | `(get-in % [0 :x])`|
@@ -175,7 +175,7 @@ Namespaced keywords do not work directly in `perc` for the JVM Clojure - consecu
 ; {:x 1, :y 2, :z 3}
 ```
 
-|token|=>|Expression|
+|Path Expression|=>|Expression|
 |---:|---:|:---|
 |`%:*/x`| => | `(get-in % [0 ::x])`|
 |`%:*/foo`| => | `(get-in % [0 ::foo])`|
@@ -220,7 +220,7 @@ Doing that with the regular old syntax, we would clobber coordinates if we tried
               x3 y3 z3))
 ```
 
-|token|=>|Expression|
+|Path Expression|=>|Expression|
 |---:|---:|:---|
 |`%1`| => | `(get-in % [0])`|
 |`%2`| => | `(get-in % [1])`|
@@ -284,8 +284,8 @@ Otherwise Clojure would have concatenated them into a `#%#:Point` token above.
 
 As discussed in the [overview](#overview), you can concatenate anonymous parameters together to create arbitrarily long _path expressions,_ which are like a cross between a `get-in` and the `->` thread operator.
 
-### Get Thread Table
-|Get Thread|=>|Expression|
+### Path Expression Table
+|Path Expression|=>|Expression|
 |---:|---:|:---|
 |`%:x:y`| => | `(get-in % [0 :x :y])`|
 |`%2:x:y/z`| => | `(get-in % [1 :x :y/z])`|
