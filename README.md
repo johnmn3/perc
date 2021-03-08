@@ -63,7 +63,7 @@ And you also know how Clojure gives you a sugared syntax for that:
 
 Well, with `perc`s, you can instead refer to `(:x %)` as just `%:x`. We refer to these compound references with `%` as [path expressions](#basic-path-expressions), which act like a `get-in` into the passed in parameters, but they mostly still act how you'd expect them to with regard to the behavior of Clojure's existing sugared anonymous function syntax, like with `%`, `%1`, `%2`, `%&`, etc. So you can mostly use them as a drop in replacement.
 
-So with [path expressions](#basic-path-expressions) you can do [named parameters](#named-anonymous-parameters) (`%:x`, `%1:x`), [namespaced named params](#namespaced-anonymous-parameters) (`%:*/x`, `%:*/s/valid?`), [keyword args](#keyword-arguments) (`%&:logging?`), or even a nested path like `%:x:y:z` (which becomes something like `(get-in % [:x :y :z])`) among others which we'll go over in the [details](#details) section below.
+So with [path expressions](#basic-path-expressions) you can do [named parameters](#named-anonymous-parameters) (`%:x`, `%1:x`), [namespaced named params](#namespaced-anonymous-parameters) (`%:*/x`, `%:*s/valid?`), [keyword args](#keyword-arguments) (`%&:logging?`), or even a nested path like `%:x:y:z` (which becomes something like `(get-in % [:x :y :z])`) among others which we'll go over in the [details](#details) section below.
 
 To use these [path expressions](#basic-path-expressions), all you have to do is, right before your function form, add a percent symbol (`%`) to the right of what would be the anoymous function's hash symbol. Like:
 
@@ -188,7 +188,7 @@ Namespaced keywords do not work directly in `perc` for the JVM Clojure - consecu
  {::x       1
   ::foo     2
   ::foo/bar 3})
-; :%:*/x 1 :%:*/foo 2 :%:*/foo/bar 3
+; :%:*/x 1 :%:*/foo 2 :%:*foo/bar 3
 ```
 
 ## Multiple parameters
@@ -242,7 +242,7 @@ Doing that with the regular old syntax, we would clobber coordinates if we tried
  {::x 2 
   :foo 3}
  {::foo/bar 3})
-; :%1 {:x 1} :%2 {:perc.core/x 2, :foo 3} :%1:x 1 :%:x 1 :%2:*/x 2 :%2:foo 3 :%3:*/foo/bar 3
+; :%1 {:x 1} :%2 {:perc.core/x 2, :foo 3} :%1:x 1 :%:x 1 :%2:*/x 2 :%2:foo 3 :%3:*foo/bar 3
 ```
 
 ## Return literals
@@ -289,7 +289,7 @@ As discussed in the [overview](#overview), you can concatenate anonymous paramet
 |---:|---:|:---|
 |`%:x:y`| => | `(get-in % [0 :x :y])`|
 |`%2:x:y/z`| => | `(get-in % [1 :x :y/z])`|
-|`%1:x:*/y/z`| => | `(get-in % [0 :x ::y/z])`|
+|`%1:x:*y/z`| => | `(get-in % [0 :x ::y/z])`|
 |`%2:x:*/z`| => | `(get-in % [1 :x ::z])`|
 |`%2:x:a%1:*/z`| => | `(get-in % [1 :x :a 0 ::z])`|
 |`%2:x:a%1:*/z%3`| => | `(get-in % [1 :x :a 0 ::z 2])`|
@@ -305,7 +305,7 @@ As discussed in the [overview](#overview), you can concatenate anonymous paramet
             :%:x:a%1:*/z%3  %:x:a%1:*/z%3)
   {:x {:y 2 :y/z 3 ::y/z 4 ::z 5 :a [{::z [6 7 8 9]}]}}
   {:x {:y 9 :y/z 8 ::y/z 7 ::z 6 :a [{::z [5 4 3 2]}]}})
-; :%:x:y 2 :%2:x:y/z 8 :%1:x:*/y/z 4 :%2:x:*/z 6 :%:x:a%1:*/z [6 7 8 9] :%2:x:a%1:*/z%1 5 :%:x:a%1:*/z%3 8
+; :%:x:y 2 :%2:x:y/z 8 :%1:x:*y/z 4 :%2:x:*/z 6 :%:x:a%1:*/z [6 7 8 9] :%2:x:a%1:*/z%1 5 :%:x:a%1:*/z%3 8
 ```
 
 ## Mapping and Reducing
@@ -498,7 +498,7 @@ Using the new-school syntax, we don't have to give as many things new names:
 ```clojure
 #%(mapv
     #%%(%:acme/event-handler %%:event/data)
-    %:*/demo/events)
+    %:*demo/events)
 ```
 
 Being able to reference multiple levels of depth with `%`, `%%` and `%%%` allows us to maintain syntactic concision without having to take the classical `(fn [])` escape hatch as often.
