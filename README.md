@@ -392,7 +392,7 @@ Thread functions implement the `#%>` reader tag which has the same semantics as 
 ```clojure
 (-> {:z/x {:y [1 'b :c 8 {::s/a {:num 9}}]}}
 
-    #%>[%:z/x:y%5:*/s/a:num]) 
+    #%>[%:z/x:y%5:*s/a:num]) 
 ; => [9]
 ```
 
@@ -401,7 +401,7 @@ It's great for quickly transforming maps within a thread context:
 ```clojure
 (-> {::x 1 ::s/y 2 :foreign/z 3}
 
-    #%> #:Point{:x %:*/x :y %:*/s/y :z %:foreign/z}) 
+    #%> #:Point{:x %:*/x :y %:*s/y :z %:foreign/z}) 
 ; => #:Point{:x 1, :y 2, :z 3}
 ```
 
@@ -412,7 +412,7 @@ Or for condensing navigation paths until a common branch between two values in a
 
     #%> %:z/x:y
 
-    #%>(+ %1 %5:*/s/a:num)) 
+    #%>(+ %1 %5:*s/a:num)) 
 ; => 10
 ```
 
