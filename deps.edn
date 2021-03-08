@@ -1,7 +1,5 @@
 {:paths ["src" "test"]
  :deps {org.clojure/clojure       {:mvn/version "1.10.1"}
-        org.clojure/clojurescript {:mvn/version "1.10.520"}
-        johnmn3/dispacio          {:git/url "https://github.com/johnmn3/dispacio.git"
-                                   :sha     "4870b8d98b525703aae7aad960b5b9fb9e9917f4"}}
+        org.clojure/clojurescript {:mvn/version "1.10.520"}}
  :aliases {:test {:extra-deps {olical/cljs-test-runner {:mvn/version "3.7.0"}}
                   :main-opts ["-m" "cljs-test-runner.main"]}}}
