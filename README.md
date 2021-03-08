@@ -22,14 +22,14 @@ Place the following in the `:deps` map of your `deps.edn` file:
 ```clojure
   ...
   johnmn3/perc {:git/url "https://github.com/johnmn3/perc"
-                :sha "676a444fa7f0eb23cea02832edb5f52ce6bc97d4"}
+                :sha "4b8689986af25c7adb5935006cae15d190b307ce"}
   ...
 ```
 
 If you want to test things out _right now_, from the comfort of your own `~/home`, go ahead and drop this in your bash pipe and smoke it:
 
 ```clojure
-clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "676a444fa7f0eb23cea02832edb5f52ce6bc97d4"}}}' -m cljs.main -c perc.core -re node -r
+clj -Sdeps '{:deps {johnmn3/perc {:git/url "https://github.com/johnmn3/perc" :sha "4b8689986af25c7adb5935006cae15d190b307ce"}}}' -m cljs.main -c perc.core -re node -r
 ```
 
 Then you should be able to test things out right away:
@@ -548,6 +548,6 @@ Per structural's readme:
     
     It’s basically a poor man’s optimizing compiler for the use-case of unpacking type-hinted structures for efficient reads
 
-So it'd be nice to output code that is even more efficient than what you'd normally write by hand and allow for type hints in really type loops.
+So it'd be nice to output code that is even more efficient than what you'd normally write by hand and allow for type hints in really tight loops.
 
 Additionally, I'd like to explore tools like [streamer](https://github.com/divs1210/streamer), where we unwind and rewind code into `->>` forms, scan for contiguous blocks of transducing candidates and then use `streamer` to rewrite those into transducing blocks, thereby preserving laziness when implied but reducing down to a transducer when eager consumption is detected - auto-transducified code. With those two additions, you might even get a non-trivial _performance_ `perc`.
